@@ -1,6 +1,7 @@
 package com.spring.codeblog.controller;
 
 import com.spring.codeblog.model.Post;
+import com.spring.codeblog.repository.CodeblogRepository;
 import com.spring.codeblog.service.CodeblogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.BindResult;
@@ -16,6 +17,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -23,6 +26,9 @@ public class CodeblogController {
 	
 	@Autowired
 	CodeblogService codeblogService;
+	
+	@Autowired
+	CodeblogRepository codeblogRepository;
 	
 	//@RequestMapping(value = "/posts", method = RequestMethod.GET)
 	@GetMapping("/posts")
@@ -54,6 +60,13 @@ public class CodeblogController {
 		}
 		post.setData(LocalDate.now());
 		codeblogService.save(post);
+		return "redirect:/posts";
+	}
+	
+	@GetMapping("/delete/{id}")
+	public String deletePost(@PathVariable("id") long id) {
+		Post post = codeblogService.findById(id);
+		codeblogRepository.delete(post);
 		return "redirect:/posts";
 	}
 }
